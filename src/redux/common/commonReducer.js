@@ -1,7 +1,10 @@
 
 const initialState = {
     theme: 'light',
-    lang: 'ko'
+    lang: 'ko',
+    menus: [
+
+    ]
 }
 const commonReducer = (state = initialState, action) => {
     switch(action.type) {
