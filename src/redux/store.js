@@ -1,4 +1,6 @@
-import {combineReducers, createStore} from 'redux';
+import {applyMiddleware, combineReducers, createStore} from 'redux';
+import {composeWithDevTools} from 'redux-devtools-extension';
+import logger from 'redux-logger';
 import userReducer from "./user/userReducer";
 import commonReducer from "./common/commonReducer";
 
@@ -72,7 +74,7 @@ export function configureStore(initialState) {
     const reducerManager = createReducerManager(staticReducers)
 
     // Create a store with the root reducer function being the one exposed by the manager.
-    const store = createStore(reducerManager.reduce, initialState)
+    const store = createStore(reducerManager.reduce, initialState, composeWithDevTools(applyMiddleware(logger)))
 
     // Optional: Put the reducer manager on the store so it is easily accessible
     store.reducerManager = reducerManager
