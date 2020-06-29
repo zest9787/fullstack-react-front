@@ -3,7 +3,7 @@ import {Form, Input, Button, Checkbox } from "antd";
 import * as apiInstance from "../../components/api";
 import {useDispatch, useSelector} from "react-redux";
 import {loginSuccess} from "../../redux/user/action";
-import {useHistory} from "react-router-dom";
+import {useHistory, Redirect} from "react-router-dom";
 
 const layout = {
     labelCol: { span: 8 },
@@ -23,9 +23,10 @@ const Login = () => {
             "username": "admin",
             "password": "1111"
         }
-        apiInstance.postData('http://localhost:8080/login', param).then(res => {
-            console.log(res);
+        apiInstance.postData('http://localhost:8080/api/auth/authentication', param).then(res => {
+            console.log('res.data : ', res.data);
             localStorage.setItem('token', res.data.token);
+            localStorage.setItem('userInfo', res.data);
             dispatch(loginSuccess(res.data));
             history.push('/');
         });
