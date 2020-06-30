@@ -11,7 +11,7 @@ function App() {
   const match = useLocation();
 
   const RenderComponent = lazy(() =>
-    match.path === "/"
+    match.pathname === "/"
       ? import("./views/home")
       : import(`./views/${match.pathname.substring(1)}`).catch(() =>
           import("./views/notfound")

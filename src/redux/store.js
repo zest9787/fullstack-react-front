@@ -1,8 +1,10 @@
 import {applyMiddleware, combineReducers, createStore} from 'redux';
 import {composeWithDevTools} from 'redux-devtools-extension';
 import logger from 'redux-logger';
+import createSagaMiddleware from 'redux-saga';
 import userReducer from "./user/userReducer";
 import commonReducer from "./common/commonReducer";
+import rootSaga from "./saga";
 
 export function createReducerManager(initialReducers) {
 
@@ -72,12 +74,15 @@ const staticReducers = {
 
 export function configureStore(initialState) {
     const reducerManager = createReducerManager(staticReducers)
-
+    const sagaMiddleware = createSagaMiddleware();
+    const middlewares = [logger, sagaMiddleware];
     // Create a store with the root reducer function being the one exposed by the manager.
-    const store = createStore(reducerManager.reduce, initialState, composeWithDevTools(applyMiddleware(logger)))
+    const store = createStore(reducerManager.reduce, initialState, composeWithDevTools(applyMiddleware(...middlewares)));
 
     // Optional: Put the reducer manager on the store so it is easily accessible
     store.reducerManager = reducerManager
+
+    store.sagaTask = sagaMiddleware.run(rootSaga);
 
     return store;
 }

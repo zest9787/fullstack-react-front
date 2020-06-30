@@ -1,24 +1,21 @@
 const initialState = {
   isLoggedIn: false,
   token: localStorage.getItem("token"),
-  username: "",
-  userid: "",
-  email: ""
+  userInfo: JSON.parse(localStorage.getItem('userInfo'))
 };
 
 const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case "LOGIN_SUCCESS":
-      console.log('action.data user_name: ', action.data.user_name);
-      console.log('action.data user_id: ', action.data.user_id);
-      console.log('action.data user_email: ', action.data.user_email);
+      console.log('token : ', action.data.token);
+      console.log('data : ', action.data);
+      localStorage.setItem("token", action.data.token);
+      localStorage.setItem("userInfo", JSON.stringify(action.data));
       return {
         ...state,
         isLoggedIn: true,
         token: action.data.token,
-        username: action.data.user_name,
-        userid:  action.data.user_id,
-        email: action.data.user_email
+        userInfo: action.data,
       };
     case "LOGIN_FAILURE":
       return {
