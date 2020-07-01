@@ -1,7 +1,8 @@
+const userInfo = JSON.parse(localStorage.getItem('userInfo'));
 const initialState = {
-  isLoggedIn: false,
+  isLoggedIn: userInfo ? true : false,
   token: localStorage.getItem("token"),
-  userInfo: JSON.parse(localStorage.getItem('userInfo'))
+  userInfo: userInfo ? userInfo : {}
 };
 
 const userReducer = (state = initialState, action) => {
@@ -18,10 +19,13 @@ const userReducer = (state = initialState, action) => {
         userInfo: action.data,
       };
     case "LOGIN_FAILURE":
+      localStorage.removeItem('token');
+      localStorage.removeItem('userInfo');
       return {
         ...state,
         isLoggedIn: false,
         token: "",
+        userInfo: ''
       };
     default:
       return state;
