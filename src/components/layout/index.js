@@ -1,34 +1,50 @@
-import React, {useCallback, useState} from "react";
-import {Button, Drawer, Layout} from "antd";
+import React, {lazy, useCallback, useState} from "react";
+import {Button, Drawer, Layout, Tabs} from "antd";
 import {Link} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {Justify} from "react-bootstrap-icons";
 import Utils from "../utils";
 import "bootstrap/dist/css/bootstrap.min.css";
-import {Justify} from "react-bootstrap-icons";
+import {addMenu, tabChange} from "../../redux/common/commonAction";
 
 const {Header} = Layout;
+const {TabPane} = Tabs;
 const AppLayout = ({children}) => {
     const [visible, setVisible] = useState(false);
+    // const [activeKey, setActiveKey] = useState(0);
+    const dispatch = useDispatch();
     const screen = Utils.WindowSize();
     const onClose = () => {
         console.log("onClose");
         setVisible(false);
     };
-
+    const {tabMenus, activeKey} = useSelector(state => state.common);
+    console.log('tabMenus : ', tabMenus);
     const menus = [
-        {name: "home", url: "/home"},
-        {name: "about", url: "/about"},
+        {id: '1', name: "home", url: "/home"},
+        {id: '2', name: "about", url: "/about"},
     ];
     const renderMenus = useCallback(
         () =>
-            menus.map((menu, idx) => (
+            menus.map((menu, idx) => {
+                // menu['component'] = lazy(() =>import(`views/${menu.url.substring(1)}`).catch(() => import("views/notfound")));
+
+                return (
                 <li className="nav-item" key={idx}>
-                    <Link to={menu.url} className="nav-link">
+                    <Link to={menu.url} onClick={() => dispatch(addMenu(menu))} style={{cursor:'pointer'}} className="nav-link">
                         {menu.name}
                     </Link>
                 </li>
-            )),
+            )}),
         [menus]
     );
+
+    const onTabChange = (key) => {
+        dispatch(tabChange(key));
+    }
+    const onTabEdit = () => {
+
+    }
 
     return (
         <>
@@ -76,7 +92,24 @@ const AppLayout = ({children}) => {
                     padding: screen.width < 768 ? "0" : "5px 15px",
                 }}
             >
-                {children}
+                <Tabs type="editable-card"
+                      onChange={onTabChange}
+                      activeKey={activeKey}
+                      onEdit={onTabEdit}>
+                    {tabMenus.map(menu => {
+                        const RenderComponent = lazy(
+                            () =>
+                                new Promise((resolve, reject) =>
+                                    setTimeout(() => resolve(import(`views/${menu.url.substring(1)}`).catch(() => import("views/notfound"))), 100)
+                                )
+                        );
+                        return (
+                            <TabPane tab={menu.url} key={menu.id} closable={true}>
+                                <RenderComponent/>
+                            </TabPane>
+                        )
+                    })};
+                </Tabs>
             </div>
         </>
     );
