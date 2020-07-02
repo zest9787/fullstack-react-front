@@ -5,7 +5,7 @@ import * as apiInstance from "../../components/api";
 
 function login(param) {
     console.log('login api 실행');
-    return apiInstance.postData('http://localhost:8080/api/auth/authentication', param);
+    return apiInstance.postData('/api/auth/authentication', param);
 }
 
 function* loginSaga(action) {

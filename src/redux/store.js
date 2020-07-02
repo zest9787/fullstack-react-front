@@ -17,6 +17,14 @@ export function createReducerManager(initialReducers) {
     // An array which is used to delete state keys when reducers are removed
     let keysToRemove = []
 
+    const rootReducer = (state, action) => {
+        if (action.type === 'LOGOUT_SUCCESS') {
+            localStorage.clear();
+            return state = undefined;
+        }
+        return combinedReducer(state, action);
+    }
+
     return {
         getReducerMap: () => reducers,
 
@@ -33,7 +41,7 @@ export function createReducerManager(initialReducers) {
             }
 
             // Delegate to the combined reducer
-            return combinedReducer(state, action)
+            return rootReducer(state, action)
         },
 
         // Adds a new reducer with the specified key
