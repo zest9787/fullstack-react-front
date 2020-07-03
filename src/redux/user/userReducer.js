@@ -27,6 +27,12 @@ const userReducer = (state = initialState, action) => {
         token: "",
         userInfo: ''
       };
+    case "LOGOUT_SUCCESS":
+       localStorage.removeItem('token');
+       localStorage.removeItem('userInfo');
+       return {
+        ...state, isLoggedIn: false, token: '', userInfo: ''
+      }  
     default:
       return state;
   }
