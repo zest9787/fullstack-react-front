@@ -9,6 +9,11 @@ const initialState = {
 }
 const commonReducer = (state = initialState, action) => {
     switch(action.type) {
+        case 'TOGGLE_DRAWER';
+          return {
+            ...state,
+            visible: !state.visible
+          }
         case 'ADD_MENU':
             /*let mergeMenus = state.tabMenus == undefined ? [action.menu] : [...state.tabMenus, action.menu];
             const hashMenu = {};
@@ -29,7 +34,12 @@ const commonReducer = (state = initialState, action) => {
                 tabMenus: newMenus
             };
         case 'REMOVE_MENU':
-            return state.tabMenus.filter(menu => menu.id !== action.id);
+            const newMenu = state.tabMenus.filter(menu => menu.id !== action.id);
+            return {
+              ...state,
+              tabMenus: newMenu,
+              activeKey: newMenu.length === 0 ? '' : newMenu[newMenu.length-1].id
+            }
         case 'TAB_CHANGE':
             return {
                 ...state,
