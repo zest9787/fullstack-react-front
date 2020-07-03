@@ -4,12 +4,14 @@ import {useSelector} from 'react-redux';
 import AppLayout from "../layout";
 
 const AuthRoute = ({ component: Component, ...rest }) => {
-  const isLoggedIn = useSelector(state => state.user.isLoggedIn);
+  const location = useLocation();
+  const token = localStorage.getItem('token');
+  const {isLoggedIn} = useSelector(state => state.user === undefined ? {isLoggedIn: false} : state.user);
   if (!isLoggedIn) return <Redirect to={"/login"} />;
   return (
     <>
       <AppLayout>
-        <Route component={Component} {...rest} />
+        <Route path={location.pathname} component={Component} {...rest} />
       </AppLayout>
     </>
   );
